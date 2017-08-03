@@ -1,0 +1,24 @@
+# System information Interface
+
+interface io.systemd.sysinfo
+
+type OperatingSystem (
+  name: string,
+  id: string,
+  variant: string,
+  version: string,
+  kernel_version: string
+)
+
+type Virtualization (
+  id: string,
+  type: string
+)
+
+type Sysinfo (
+  system: OperatingSystem,
+  virtualization: Virtualization,
+  hostname: string
+)
+
+method GetInfo() -> (info: Sysinfo)
