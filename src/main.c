@@ -236,7 +236,6 @@ int main(int argc, char **argv) {
                 fd = 3;
 
         r = varlink_server_new(&m->server, address, fd,
-                               "io.systemd.sysinfo",
                                NULL,
                                &io_systemd_sysinfo_varlink, 1);
         if (r < 0) {
