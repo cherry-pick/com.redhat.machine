@@ -14,7 +14,7 @@
 #include <sys/utsname.h>
 
 typedef struct {
-        VarlinkServer *server;
+        VarlinkService *service;
 
         int epoll_fd;
         int signal_fd;
@@ -27,8 +27,8 @@ static void manager_free(Manager *m) {
         if (m->signal_fd >= 0)
                 close(m->signal_fd);
 
-        if (m->server)
-                varlink_server_free(m->server);
+        if (m->service)
+                varlink_service_free(m->service);
 
         free(m);
 }
@@ -134,7 +134,7 @@ static long detect_virt(char **namep) {
         return 0;
 }
 
-static long io_systemd_sysinfo_GetInfo(VarlinkServer *server,
+static long io_systemd_sysinfo_GetInfo(VarlinkService *service,
                                        VarlinkCall *call,
                                        VarlinkObject *parameters,
                                        uint64_t flags,
@@ -235,13 +235,18 @@ int main(int argc, char **argv) {
         if (read(3, NULL, 0) == 0)
                 fd = 3;
 
-        r = varlink_server_new(&m->server, address, fd,
-                               NULL,
-                               &io_systemd_sysinfo_varlink, 1);
+        r = varlink_service_new(&m->service, "io.systemd.sysinfo", VERSION, address, fd);
         if (r < 0) {
-                fprintf(stderr, "Unable to start varlink server: %s\n", strerror(-r));
+                fprintf(stderr, "Unable to start varlink service: %s\n", strerror(-r));
                 return EXIT_FAILURE;
         }
+
+        r = varlink_service_add_interface(m->service, io_systemd_sysinfo_varlink,
+                                          "GetInfo", io_systemd_sysinfo_GetInfo, m,
+                                          NULL);
+        if (r < 0)
+                return EXIT_FAILURE;
+
 
         m->signal_fd = make_signalfd();
         if (m->signal_fd < 0)
@@ -249,13 +254,8 @@ int main(int argc, char **argv) {
 
         m->epoll_fd = epoll_create(EPOLL_CLOEXEC);
         if (m->epoll_fd < 0 ||
-            epoll_add(m->epoll_fd, varlink_server_get_fd(m->server), m->server) < 0 ||
+            epoll_add(m->epoll_fd, varlink_service_get_fd(m->service), m->service) < 0 ||
             epoll_add(m->epoll_fd, m->signal_fd, NULL) < 0)
-                return EXIT_FAILURE;
-
-        r = varlink_server_set_method_callback(m->server, "io.systemd.sysinfo.GetInfo",
-                                               io_systemd_sysinfo_GetInfo, m);
-        if (r < 0)
                 return EXIT_FAILURE;
 
         for (;;) {
@@ -273,8 +273,8 @@ int main(int argc, char **argv) {
                 if (n == 0)
                         continue;
 
-                if (event.data.ptr == m->server) {
-                        r = varlink_server_process_events(m->server);
+                if (event.data.ptr == m->service) {
+                        r = varlink_service_process_events(m->service);
                         if (r < 0) {
                                 fprintf(stderr, "Control: %s\n", strerror(-r));
                                 if (r != -EPIPE)
