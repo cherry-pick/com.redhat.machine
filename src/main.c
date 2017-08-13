@@ -235,7 +235,13 @@ int main(int argc, char **argv) {
         if (read(3, NULL, 0) == 0)
                 fd = 3;
 
-        r = varlink_service_new(&m->service, "io.systemd.sysinfo", VERSION, address, fd);
+        r = varlink_service_new(&m->service,
+                                "systemd",
+                                "System Information",
+                                VERSION,
+                                "https://github.com/varlink/io.systemd.sysinfo",
+                                address,
+                                fd);
         if (r < 0) {
                 fprintf(stderr, "Unable to start varlink service: %s\n", strerror(-r));
                 return EXIT_FAILURE;
