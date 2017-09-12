@@ -1,4 +1,4 @@
-#include "io.systemd.sysinfo.varlink.h"
+#include "io.systemd.sysinfo.varlink.c.inc"
 #include "util.h"
 
 #include <assert.h>
