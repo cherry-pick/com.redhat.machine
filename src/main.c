@@ -8,7 +8,6 @@
 #include <string.h>
 #include <sys/epoll.h>
 #include <sys/signalfd.h>
-#include <libudev.h>
 #include <time.h>
 #include <varlink.h>
 #include <sys/utsname.h>
