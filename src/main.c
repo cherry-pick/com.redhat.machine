@@ -230,7 +230,7 @@ int main(int argc, char **argv) {
                 return EXIT_FAILURE;
         }
 
-        /* An activator passed us our connection. */
+        /* An activator passed us our listen socket. */
         if (read(3, NULL, 0) == 0)
                 fd = 3;
 
@@ -245,10 +245,6 @@ int main(int argc, char **argv) {
                 fprintf(stderr, "Unable to start varlink service: %s\n", strerror(-r));
                 return EXIT_FAILURE;
         }
-
-        r = varlink_service_set_credentials_mode(m->service, 0666);
-        if (r < 0)
-                return EXIT_FAILURE;
 
         r = varlink_service_add_interface(m->service, io_systemd_sysinfo_varlink,
                                           "GetInfo", io_systemd_sysinfo_GetInfo, m,
