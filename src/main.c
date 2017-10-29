@@ -281,7 +281,7 @@ int main(int argc, char **argv) {
                 if (event.data.ptr == m->service) {
                         r = varlink_service_process_events(m->service);
                         if (r < 0) {
-                                fprintf(stderr, "Control: %s\n", strerror(-r));
+                                fprintf(stderr, "Error processing events: %s\n", varlink_error_string(-r));
                                 if (r != -EPIPE)
                                         return EXIT_FAILURE;
                         }
