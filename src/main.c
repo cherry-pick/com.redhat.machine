@@ -242,7 +242,7 @@ int main(int argc, char **argv) {
                                 address,
                                 fd);
         if (r < 0) {
-                fprintf(stderr, "Unable to start varlink service: %s\n", strerror(-r));
+                fprintf(stderr, "Unable to start varlink service: %s\n", varlink_error_string(-r));
                 return EXIT_FAILURE;
         }
 
@@ -257,7 +257,7 @@ int main(int argc, char **argv) {
         if (m->signal_fd < 0)
                 return EXIT_FAILURE;
 
-        m->epoll_fd = epoll_create(EPOLL_CLOEXEC);
+        m->epoll_fd = epoll_create1(EPOLL_CLOEXEC);
         if (m->epoll_fd < 0 ||
             epoll_add(m->epoll_fd, varlink_service_get_fd(m->service), m->service) < 0 ||
             epoll_add(m->epoll_fd, m->signal_fd, NULL) < 0)
