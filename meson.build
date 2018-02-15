@@ -1,4 +1,4 @@
-project('io.systemd.sysinfo', 'c',
+project('com.redhat.machine', 'c',
         version : '1',
         license : 'ASL2.0',
         default_options: [

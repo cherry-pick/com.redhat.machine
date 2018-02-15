@@ -1,1 +1,1 @@
-Implements the [**io.systemd.sysinfo**](https://github.com/varlink/io.systemd.sysinfo/blob/master/src/io.systemd.sysinfo.varlink) interface using [varlink](http://varlink.org).
+Implements the [**com.redhat.machine**](https://github.com/varlink/com.redhat.machine/blob/master/src/com.redhat.machine.varlink) interface using [varlink](http://varlink.org).

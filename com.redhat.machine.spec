@@ -1,7 +1,7 @@
-Name:           io.systemd.sysinfo
+Name:           com.redhat.machine
 Version:        1
 Release:        1%{?dist}
-Summary:        Systemd Device Interface
+Summary:        Machine Interface
 License:        ASL2.0
 URL:            https://github.com/varlink/%{name}
 Source0:        https://github.com/varlink/%{name}/archive/%{name}-%{version}.tar.gz
@@ -11,7 +11,7 @@ BuildRequires:  pkgconfig
 BuildRequires:  libvarlink-devel
 
 %description
-Sytem Information Interface.
+Machine Interface.
 
 %prep
 %setup -q
@@ -29,8 +29,8 @@ export LC_CTYPE=C.utf8
 
 %files
 %license LICENSE
-%{_bindir}/io.systemd.sysinfo
+%{_bindir}/com.redhat.machine
 
 %changelog
 * Tue Aug 29 2017 <info@varlink.org> 1-1
-- io.systemd.sysinfo 1
+- com.redhat.machine 1

@@ -1,4 +1,4 @@
-#include "io.systemd.sysinfo.varlink.c.inc"
+#include "com.redhat.machine.varlink.c.inc"
 #include "util.h"
 
 #include <assert.h>
@@ -133,7 +133,7 @@ static long detect_virt(char **namep) {
         return 0;
 }
 
-static long io_systemd_sysinfo_GetInfo(VarlinkService *service,
+static long com_redhat_machine_GetInfo(VarlinkService *service,
                                        VarlinkCall *call,
                                        VarlinkObject *parameters,
                                        uint64_t flags,
@@ -235,10 +235,10 @@ int main(int argc, char **argv) {
                 fd = 3;
 
         r = varlink_service_new(&m->service,
-                                "systemd",
-                                "System Information",
+                                "Red Hat",
+                                "Machine Interface",
                                 VERSION,
-                                "https://github.com/varlink/io.systemd.sysinfo",
+                                "https://github.com/varlink/com.redhat.machine",
                                 address,
                                 fd);
         if (r < 0) {
@@ -246,8 +246,8 @@ int main(int argc, char **argv) {
                 return EXIT_FAILURE;
         }
 
-        r = varlink_service_add_interface(m->service, io_systemd_sysinfo_varlink,
-                                          "GetInfo", io_systemd_sysinfo_GetInfo, m,
+        r = varlink_service_add_interface(m->service, com_redhat_machine_varlink,
+                                          "GetInfo", com_redhat_machine_GetInfo, m,
                                           NULL);
         if (r < 0)
                 return EXIT_FAILURE;
