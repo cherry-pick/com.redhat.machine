@@ -8,9 +8,7 @@ type OperatingSystem (
   url: string
 )
 
-# Detected virtualization of a machine.
-#
-# "id" is a short identifier, for example "kvm" or "docker".
+# Virtualization of a machine.
 type Virtualization (
   type: (none, vm, container),
   id: string
