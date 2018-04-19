@@ -3,6 +3,7 @@
 
 #include <assert.h>
 #include <errno.h>
+#include <getopt.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
@@ -215,8 +216,14 @@ static long epoll_add(int epoll_fd, int fd, void *ptr) {
 }
 
 int main(int argc, char **argv) {
+        static const struct option options[] = {
+                { "varlink", required_argument, NULL, 'v' },
+                { "help",    no_argument,       NULL, 'h' },
+                {}
+        };
+        int c;
         _cleanup_(manager_freep) Manager *m = NULL;
-        const char *address;
+        const char *address = NULL;
         int fd = -1;
         long r;
 
@@ -224,11 +231,19 @@ int main(int argc, char **argv) {
         if (r < 0)
                 return EXIT_FAILURE;
 
-        address = argv[1];
-        if (!address) {
-                fprintf(stderr, "Usage: %s ADDRESS\n", program_invocation_short_name);
-                return EXIT_FAILURE;
+        while ((c = getopt_long(argc, argv, ":vh", options, NULL)) >= 0) {
+                switch (c) {
+                        case 'h':
+                                printf("Usage: %s --varlink=URI\n\n", program_invocation_short_name);
+                                return EXIT_SUCCESS;
+
+                        case 'v':
+                                address = optarg;
+                }
         }
+
+        if (!address)
+                return EXIT_FAILURE;
 
         /* An activator passed us our listen socket. */
         if (read(3, NULL, 0) == 0)
